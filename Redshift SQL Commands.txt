@@ -1,0 +1,71 @@
+CREATE SCHEMA ecommerce_data;
+
+CREATE TABLE ecommerce_data.dim_products (
+    product_id INT ENCODE delta,
+    product_name VARCHAR(255) ENCODE lzo,
+    category VARCHAR(100) ENCODE lzo,
+    price DECIMAL(10, 2) ENCODE lzo,
+    supplier_id INT ENCODE lzo
+)
+DISTSTYLE KEY
+DISTKEY (category)
+SORTKEY (product_id);
+
+INSERT INTO ecommerce_data.dim_products (product_id, product_name, category, price, supplier_id)
+VALUES
+    (1, 'Laptop', 'Electronics', 800.00, 101),
+    (2, 'Smartphone', 'Electronics', 600.00, 102),
+    (3, 'Headphones', 'Electronics', 100.00, 103),
+    (4, 'Backpack', 'Accessories', 50.00, 104),
+    (5, 'Watch', 'Accessories', 150.00, 105),
+    (6, 'T-shirt', 'Clothing', 20.00, 106),
+    (7, 'Jeans', 'Clothing', 60.00, 107),
+    (8, 'Running Shoes', 'Footwear', 80.00, 108),
+    (9, 'Sunglasses', 'Accessories', 80.00, 109),
+    (10, 'Portable Speaker', 'Electronics', 120.00, 110);
+
+CREATE TABLE ecommerce_data.dim_customers (
+    customer_id INT ENCODE delta,
+    first_name VARCHAR(100) ENCODE lzo,
+    last_name VARCHAR(100) ENCODE lzo,
+    email VARCHAR(255) ENCODE lzo,
+    membership_level VARCHAR(50) ENCODE lzo
+)
+DISTSTYLE KEY
+DISTKEY (membership_level)
+SORTKEY (customer_id);
+
+INSERT INTO ecommerce_data.dim_customers (customer_id, first_name, last_name, email, membership_level)
+VALUES
+    (1, 'John', 'Smith', 'john.smith@example.com', 'Gold'),
+    (2, 'Emily', 'Johnson', 'emily.johnson@example.com', 'Silver'),
+    (3, 'Michael', 'Williams', 'michael.williams@example.com', 'Bronze'),
+    (4, 'Jessica', 'Brown', 'jessica.brown@example.com', 'Gold'),
+    (5, 'Christopher', 'Jones', 'christopher.jones@example.com', 'Silver'),
+    (6, 'Amanda', 'Davis', 'amanda.davis@example.com', 'Bronze'),
+    (7, 'Matthew', 'Miller', 'matthew.miller@example.com', 'Gold'),
+    (8, 'Sarah', 'Wilson', 'sarah.wilson@example.com', 'Silver');
+
+CREATE TABLE ecommerce_data.fact_transactions (
+    first_name VARCHAR(100) ENCODE lzo,
+    product_id INT ENCODE delta,
+    product_name VARCHAR(100) ENCODE lzo,
+    membership_level VARCHAR(100) ENCODE lzo,
+    customer_id INT ENCODE delta,
+    supplier_id INT ENCODE delta,
+    category VARCHAR(100) ENCODE lzo,
+    transaction_date DATE ENCODE bytedict,
+    payment_type VARCHAR(100) ENCODE lzo,
+    transaction_id VARCHAR(100) ENCODE lzo,
+    quantity INT ENCODE delta,
+    status VARCHAR(100) ENCODE lzo,
+    customer_email VARCHAR(100) ENCODE lzo,
+    last_name VARCHAR(100) ENCODE lzo,
+    total_price DECIMAL(10, 2) ENCODE lzo,
+    transaction_type VARCHAR(100) ENCODE lzo
+)
+DISTSTYLE KEY
+DISTKEY (transaction_type)
+SORTKEY (transaction_id);
+
+SELECT * FROM ecommerce_data.fact_transactions;
